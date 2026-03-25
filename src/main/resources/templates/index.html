@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{base}">
+
+<body>
+
+<div layout:fragment="content">
+
+    <!-- ================= HOME SECTION ================= -->
+    <div class="home-section">
+        <h1>Welcome to SliceHouse</h1>
+        <p>Where every slice is a piece of happiness.</p>
+
+        <div sec:authorize="isAnonymous()">
+            <p style="color:#888;margin:15px 0;"></p>
+        </div>
+    </div>
+
+    <!-- ================= CATEGORY SECTION ================= -->
+    <section style="padding: 40px; background-color: #f5b400;">
+        
+        <h2 style="color:white; text-align:center;">Categories</h2>
+
+        <!-- If no categories -->
+        <p th:if="${#lists.isEmpty(categories)}" 
+           style="color:white; text-align:center;">
+            No categories available
+        </p>
+
+        <!-- Category cards -->
+        <div th:if="${!#lists.isEmpty(categories)}"
+             style="display:flex; gap:30px; flex-wrap:wrap; justify-content:center; margin-top:20px;">
+
+            <div th:each="cat : ${categories}" 
+                 style="background:#000; padding:20px; border-radius:20px; width:220px; text-align:center; box-shadow:0 5px 15px rgba(0,0,0,0.3);">
+
+                <!-- ✅ Dynamic Image -->
+               <img th:src="@{'/images/' + ${cat.image}}"
+     alt="Category Image"
+     style="width:150px; height:150px; border-radius:10px; object-fit:cover;">
+                <!-- Category Name -->
+                <h3 style="color:white; margin-top:10px;" 
+                    th:text="${cat.categoryName}">
+                </h3>
+
+                <!-- ✅ Description -->
+                <p style="color:#ccc; font-size:13px; margin-top:5px;" 
+                   th:text="${cat.description}">
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ================= PIZZA SECTION ================= -->
+    <h2 class="section-title">Our Pizzas</h2>
+
+    <div class="menu-grid">
+
+        <a th:href="@{/cheese}" class="menu-link">
+            <div class="menu-card">
+                <img th:src="@{/images/cheezepizza.png}">
+                <h3>Cheese Pizza</h3>
+            </div>
+        </a>
+
+        <a th:href="@{/pepperoni}" class="menu-link">
+            <div class="menu-card">
+                <img th:src="@{/images/pepperoni.png}">
+                <h3>Pepperoni Pizza</h3>
+            </div>
+        </a>
+
+        <a th:href="@{/vegie}" class="menu-link">
+            <div class="menu-card">
+                <img th:src="@{/images/vegie.png}">
+                <h3>Veggie Pizza</h3>
+            </div>
+        </a>
+
+        <a th:href="@{/mania}" class="menu-link">
+            <div class="menu-card">
+                <img th:src="@{/images/margherita.png}">
+                <h3>Pizza Mania</h3>
+            </div>
+        </a>
+
+    </div>
+
+    <!-- ================= AD SECTION ================= -->
+    <section class="advertisement">
+
+        <div class="ad-banner">
+
+            <img th:src="@{/images/banner.png}" alt="Beverage Advertisement">
+
+            <div class="coming-marquee">
+                <span>🍹 BEVERAGES COMING SOON • REFRESHING DRINKS ARRIVING SOON • STAY TUNED 🍹</span>
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!doctype html>
+
+<html lang="en"
+xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{admin/admin}">
+
+<body>
+
+<div layout:fragment="content">
+
+<div class="container mt-4">
+
+<h2 class="mb-4">Cart Items</h2>
+
+<a th:href="@{/admin/cart/add}" class="btn btn-primary mb-3">
+Add Cart Item
+</a>
+
+<table class="table table-bordered table-striped">
+
+<thead>
+
+<tr>
+<th>ID</th>
+<th>User</th>
+<th>Pizza</th>
+<th>Quantity</th>
+<th>Actions</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr th:each="item : ${cartItems}">
+
+<td th:text="${item.id}"></td>
+
+<td th:text="${item.user != null ? item.user.username : 'N/A'}"></td>
+
+<td th:text="${item.pizza != null ? item.pizza.name : 'N/A'}"></td>
+
+<td th:text="${item.quantity}"></td>
+
+<td>
+
+<a th:href="@{/admin/cart/delete/{id}(id=${item.id})}"
+class="btn btn-danger btn-sm"
+onclick="return confirm('Delete this cart item?')">
+
+Delete
+
+</a>
+
+</td>
+
+</tr>
+
+<!-- When cart is empty -->
+
+<tr th:if="${#lists.isEmpty(cartItems)}">
+
+<td colspan="5" class="text-center">
+No cart items found
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</body>
+</html>
+
