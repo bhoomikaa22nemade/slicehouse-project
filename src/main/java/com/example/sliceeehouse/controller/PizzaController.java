@@ -6,10 +6,15 @@ import com.example.sliceeehouse.repository.PizzaRepository;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.Map;
+
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 
 @Controller
 @RequestMapping("/admin/pizzas")
@@ -20,7 +25,8 @@ public class PizzaController {
     public PizzaController(PizzaRepository pizzaRepository) {
         this.pizzaRepository = pizzaRepository;
     }
-
+@Autowired
+private Cloudinary cloudinary;
     @GetMapping
     public String viewPizzas(Model model) {
         model.addAttribute("pizzas", pizzaRepository.findAll());
@@ -33,18 +39,23 @@ public class PizzaController {
         model.addAttribute("categories", Category.values());
         return "admin/pizza/add_pizza";
     }
+    
+@PostMapping("/add")
+public String addPizza(@ModelAttribute Pizza pizza,
+                      @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
 
-    @PostMapping("/add")
-    public String addPizza(@ModelAttribute Pizza pizza,
-                           @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
+    if (!imageFile.isEmpty()) {
+        Map uploadResult = cloudinary.uploader().upload(
+                imageFile.getBytes(),
+                ObjectUtils.emptyMap()
+        );
 
-        if (!imageFile.isEmpty()) {
-            pizza.setProductImage(imageFile.getBytes());
-        }
-
-        pizzaRepository.save(pizza);
-        return "redirect:/admin/pizzas";
+        pizza.setProductImage(uploadResult.get("url").toString());
     }
+
+    pizzaRepository.save(pizza);
+    return "redirect:/admin/pizzas";
+}
 
     @GetMapping("/update/{id}")
     public String updatePizzaForm(@PathVariable Long id, Model model) {
@@ -54,17 +65,18 @@ public class PizzaController {
         return "admin/pizza/update_pizza";
     }
 
-    @PostMapping("/update")
-    public String updatePizza(@ModelAttribute Pizza pizza,
-                              @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
+   @PostMapping("/update")
+public String updatePizza(@ModelAttribute Pizza pizza,
+                         @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
 
-        if (!imageFile.isEmpty()) {
-            pizza.setProductImage(imageFile.getBytes());
-        }
-
-        pizzaRepository.save(pizza);
-        return "redirect:/admin/pizzas";
+    if (!imageFile.isEmpty()) {
+        Map uploadResult = cloudinary.uploader().upload(imageFile.getBytes(), ObjectUtils.emptyMap());
+        pizza.setProductImage(uploadResult.get("url").toString());
     }
+
+    pizzaRepository.save(pizza);
+    return "redirect:/admin/pizzas";
+}
 
     @GetMapping("/delete/{id}")
     public String deletePizza(@PathVariable Long id) {
@@ -72,10 +84,5 @@ public class PizzaController {
         return "redirect:/admin/pizzas";
     }
 
-    @GetMapping("/images/{id}")
-    @ResponseBody
-    public byte[] getImage(@PathVariable Long id) {
-        Pizza pizza = pizzaRepository.findById(id).orElseThrow();
-        return pizza.getProductImage();
-    }
+
 }

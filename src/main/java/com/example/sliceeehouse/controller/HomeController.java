@@ -102,18 +102,5 @@ public class HomeController {
         return "pizza_details";
     }
 
-    @GetMapping("/pizza/image/{id}")
-    @ResponseBody
-    public ResponseEntity<byte[]> getPizzaImage(@PathVariable Long id) {
-
-        Pizza pizza = pizzaRepository.findById(id).orElse(null);
-
-        if (pizza == null || pizza.getProductImage() == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_PNG)
-                .body(pizza.getProductImage());
-    }
+    
 }

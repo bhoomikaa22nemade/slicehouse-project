@@ -13,99 +13,102 @@
 <style>
 
 .page-content{
-padding:40px;
-background:#f5b400;
-min-height:100vh;
+    padding:40px;
+    background:#f5b400;
+    min-height:100vh;
 }
 
 .container{
-max-width:1200px;
-margin:auto;
-background:#111;
-color:#fff;
-padding:40px;
-border-radius:24px;
+    max-width:1200px;
+    margin:auto;
+    background:#111;
+    color:#fff;
+    padding:40px;
+    border-radius:24px;
 }
 
 .top-section{
-display:flex;
-gap:50px;
-margin-bottom:40px;
+    display:flex;
+    gap:50px;
+    margin-bottom:40px;
 }
 
+/* ✅ IMAGE FIXED */
 .top-section img{
-width:420px;
-height:440px;
-object-fit:cover;
-border-radius:22px;
-box-shadow:0 20px 50px rgba(0,0,0,.6);
+    width:420px;
+    height:420px;
+    object-fit:cover;
+    border-radius:20px;
+    box-shadow:0 20px 50px rgba(0,0,0,.6);
 }
 
 h1{
-color:#ffc107;
-font-size:42px;
+    color:#ffc107;
+    font-size:42px;
 }
 
 .desc{
-font-size:15px;
-line-height:1.8;
+    font-size:15px;
+    line-height:1.8;
 }
 
 .price{
-font-size:28px;
-font-weight:600;
-color:#ffcc00;
-margin:15px 0;
+    font-size:28px;
+    font-weight:600;
+    color:#ffcc00;
+    margin:15px 0;
 }
 
 select,button{
-width:100%;
-padding:12px;
-margin-bottom:15px;
-border-radius:8px;
-border:none;
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border-radius:8px;
+    border:none;
 }
 
 button{
-background:#7b0000;
-color:#fff;
-cursor:pointer;
-font-size:16px;
+    background:#7b0000;
+    color:#fff;
+    cursor:pointer;
+    font-size:16px;
 }
 
 .section{
-margin-top:40px;
+    margin-top:40px;
 }
 
 .section h2{
-color:#ffc107;
+    color:#ffc107;
 }
 
 .coupon{
-background:#1c1c1c;
-padding:15px;
-border-radius:12px;
-margin-bottom:10px;
-display:block;
+    background:#1c1c1c;
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:10px;
+    display:block;
 }
 
 .coupon span{
-color:#ffcc00;
-font-weight:600;
+    color:#ffcc00;
+    font-weight:600;
 }
 
+/* ✅ RESPONSIVE */
 @media(max-width:900px){
-.top-section{
-flex-direction:column;
-}
+    .top-section{
+        flex-direction:column;
+    }
 
-.top-section img{
-width:100%;
-height:380px;
-}
+    .top-section img{
+        width:100%;
+        height:350px;
+    }
 }
 
 </style>
+
 </head>
 
 <body>
@@ -118,65 +121,64 @@ height:380px;
 
 <div class="top-section">
 
-<img th:src="@{/pizza/image/{id}(id=${pizza.id})}" th:alt="${pizza.name}"/>
+
+<!-- ✅ FINAL IMAGE FIX -->
+<img th:src="${pizza.productImage}" alt="Pizza Image"/>
 
 <div>
 
-<h1 th:text="${pizza.name}">Pizza Name</h1>
+    <h1 th:text="${pizza.name}">Pizza Name</h1>
 
-<p class="desc" th:text="${pizza.description}"></p>
+    <p class="desc" th:text="${pizza.description}"></p>
 
-<p><b>Ingredients:</b></p>
-<p th:text="${pizza.smallDescription}"></p>
+    <p><b>Ingredients:</b></p>
+    <p th:text="${pizza.smallDescription}"></p>
 
-<!-- CART FORM -->
+    <!-- CART FORM -->
+    <form id="cartForm" th:action="@{/cart/add}" method="post">
 
-<form id="cartForm" th:action="@{/cart/add}" method="post">
+        <input type="hidden" name="pizzaId" th:value="${pizza.id}">
+        <input type="hidden" id="couponInput" name="coupon">
 
-<input type="hidden" name="pizzaId" th:value="${pizza.id}">
-<input type="hidden" id="couponInput" name="coupon">
+        <!-- SIZE -->
+        <select name="size" id="size" onchange="updatePrice()">
 
-<!-- SIZE -->
+            <option th:value="'Regular'"
+                    th:data-price="${pizza.sellingPrice}"
+                    th:text="'Regular - ₹' + ${pizza.sellingPrice}">
+            </option>
 
-<select name="size" id="size" onchange="updatePrice()">
+            <option th:value="'Medium'"
+                    th:data-price="${pizza.sellingPrice + 100}"
+                    th:text="'Medium - ₹' + (${pizza.sellingPrice + 100})">
+            </option>
 
-<option th:value="'Regular'"
-th:data-price="${pizza.sellingPrice}"
-th:text="'Regular - ₹' + ${pizza.sellingPrice}">
-</option>
+            <option th:value="'Large'"
+                    th:data-price="${pizza.sellingPrice + 200}"
+                    th:text="'Large - ₹' + (${pizza.sellingPrice + 200})">
+            </option>
 
-<option th:value="'Medium'"
-th:data-price="${pizza.sellingPrice + 100}"
-th:text="'Medium - ₹' + (${pizza.sellingPrice + 100})">
-</option>
+        </select>
 
-<option th:value="'Large'"
-th:data-price="${pizza.sellingPrice + 200}"
-th:text="'Large - ₹' + (${pizza.sellingPrice + 200})">
-</option>
+        <!-- PRICE -->
+        <div class="price">
+            ₹ <span id="priceDisplay" th:text="${pizza.sellingPrice}"></span>
+        </div>
 
-</select>
+        <!-- QUANTITY -->
+        <select name="quantity">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+        </select>
 
-<!-- PRICE -->
+        <button type="submit">Add to Cart</button>
 
-<div class="price">
-₹ <span id="priceDisplay" th:text="${pizza.sellingPrice}"></span>
-</div>
-
-<!-- QUANTITY -->
-
-<select name="quantity">
-<option value="1">1</option>
-<option value="2">2</option>
-<option value="3">3</option>
-<option value="4">4</option>
-</select>
-
-<button type="submit">Add to Cart</button>
-
-</form>
+    </form>
 
 </div>
+
 
 </div>
 
@@ -203,6 +205,8 @@ th:text="'Large - ₹' + (${pizza.sellingPrice + 200})">
 
 </div>
 
+<!-- LOVE SECTION -->
+
 <div class="section">
 
 <h2>Why Customers Love It ❤️</h2>
@@ -224,29 +228,24 @@ and midnight cravings!
 <script>
 
 function updatePrice(){
-
-let select=document.getElementById("size");
-let price=select.options[select.selectedIndex].dataset.price;
-
-document.getElementById("priceDisplay").innerText=price;
-
+    let select=document.getElementById("size");
+    let price=select.options[select.selectedIndex].dataset.price;
+    document.getElementById("priceDisplay").innerText=price;
 }
 
-// capture coupon before submit
+// coupon capture
 document.getElementById("cartForm").addEventListener("submit", function(){
-
-let coupon=document.querySelector('input[name="couponRadio"]:checked');
-
-if(coupon){
-document.getElementById("couponInput").value=coupon.value;
-}
-
+    let coupon=document.querySelector('input[name="couponRadio"]:checked');
+    if(coupon){
+        document.getElementById("couponInput").value=coupon.value;
+    }
 });
 
 </script>
 
 </body>
 </html>
+
 
 
 

@@ -25,6 +25,6 @@ public class Pizza {
     private Integer sellingPrice;
     private Integer discountedPrice;
 
-    @Lob
-    private byte[] productImage; // store image in DB
+   @Column(name = "image_url")
+   private String productImage; // store image in DB
 }

@@ -38,7 +38,7 @@
                  style="background:#000; padding:20px; border-radius:20px; width:220px; text-align:center; box-shadow:0 5px 15px rgba(0,0,0,0.3);">
 
                 <!-- ✅ Dynamic Image -->
-               <img th:src="@{'/images/' + ${cat.image}}"
+               <img th:src="${cat.image}"
      alt="Category Image"
      style="width:150px; height:150px; border-radius:10px; object-fit:cover;">
                 <!-- Category Name -->
