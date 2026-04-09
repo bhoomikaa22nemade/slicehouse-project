@@ -22,9 +22,9 @@ public class CategoryController {
     private CategoryRepository repo;
 
     @Autowired
-    private Cloudinary cloudinary; // ✅ ADD THIS
+    private Cloudinary cloudinary;
 
-    // Dashboard Page
+    // ================= DASHBOARD =================
     @GetMapping
     public String viewPage(Model model) {
         model.addAttribute("categories", repo.findByStatusTrue());
@@ -32,17 +32,20 @@ public class CategoryController {
         return "category";
     }
 
-    // ✅ SAVE CATEGORY WITH IMAGE UPLOAD
+    // ================= SAVE CATEGORY =================
     @PostMapping("/save")
     public String saveCategory(@ModelAttribute Category category,
                                @RequestParam("file") MultipartFile file) throws IOException {
 
-        // 🔥 Upload to Cloudinary
-        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-        String imageUrl = uploadResult.get("url").toString();
+        // 🔥 Upload only if file present
+        if (file != null && !file.isEmpty()) {
+            Map uploadResult = cloudinary.uploader()
+                    .upload(file.getBytes(), ObjectUtils.emptyMap());
 
-        // Save URL in DB
-        category.setImage(imageUrl);
+            // ✅ USE secure_url (IMPORTANT FIX)
+            String imageUrl = uploadResult.get("secure_url").toString();
+            category.setImage(imageUrl);
+        }
 
         category.setCreatedAt(LocalDateTime.now());
         category.setUpdatedAt(LocalDateTime.now());
@@ -53,29 +56,34 @@ public class CategoryController {
         return "redirect:/category";
     }
 
-    // Edit Category
+    // ================= EDIT =================
     @GetMapping("/edit/{id}")
     public String editCategory(@PathVariable int id, Model model) {
         Category cat = repo.findById(id).orElseThrow();
+
         model.addAttribute("category", cat);
         model.addAttribute("categories", repo.findByStatusTrue());
+
         return "category";
     }
 
-    // ✅ UPDATE CATEGORY WITH IMAGE (optional change)
+    // ================= UPDATE =================
     @PostMapping("/update")
     public String updateCategory(@ModelAttribute Category category,
-                                 @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+                                 @RequestParam(value = "file", required = false) MultipartFile file)
+            throws IOException {
 
         Category cat = repo.findById(category.getCategoryId()).orElseThrow();
 
         cat.setCategoryName(category.getCategoryName());
         cat.setDescription(category.getDescription());
 
-        // 🔥 If new image uploaded → update
+        // 🔥 Upload new image only if provided
         if (file != null && !file.isEmpty()) {
-            Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-            String imageUrl = uploadResult.get("url").toString();
+            Map uploadResult = cloudinary.uploader()
+                    .upload(file.getBytes(), ObjectUtils.emptyMap());
+
+            String imageUrl = uploadResult.get("secure_url").toString();
             cat.setImage(imageUrl);
         }
 
@@ -86,12 +94,15 @@ public class CategoryController {
         return "redirect:/category";
     }
 
-    // Soft Delete
+    // ================= DELETE (SOFT) =================
     @GetMapping("/delete/{id}")
     public String deleteCategory(@PathVariable int id) {
         Category cat = repo.findById(id).orElseThrow();
+
         cat.setStatus(false);
+
         repo.save(cat);
+
         return "redirect:/category";
     }
 }

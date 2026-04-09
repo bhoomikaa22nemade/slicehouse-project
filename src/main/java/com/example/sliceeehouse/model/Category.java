@@ -7,6 +7,14 @@ import java.time.LocalDateTime;
 @Table(name = "categories")
 public class Category {
 
+    public static final Category CHEESE_PIZZA = null;
+
+    public static final Category PEPPERONI_PIZZA = null;
+
+    public static final Category VEGGIE = null;
+
+    public static final Category MANIA = null;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_id")
@@ -87,5 +95,10 @@ public class Category {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public static Object values() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'values'");
     }
 }

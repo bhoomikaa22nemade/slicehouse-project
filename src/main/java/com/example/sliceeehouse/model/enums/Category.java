@@ -1,12 +1,12 @@
-package com.example.sliceeehouse.model.enums;
+// package com.example.sliceeehouse.model.enums;
 
-public enum Category {
+// public enum Category {
 
-    CHEESE_PIZZA,
-    PEPPERONI_PIZZA,
-    VEGGIE,
-    MANIA,
-    COFFEE,
-    DRINKS
+//     CHEESE_PIZZA,
+//     PEPPERONI_PIZZA,
+//     VEGGIE,
+//     MANIA,
+//     COFFEE,
+//     DRINKS
 
-}
+// }

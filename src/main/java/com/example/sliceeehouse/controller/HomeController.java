@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.sliceeehouse.model.Category;
 import com.example.sliceeehouse.model.Pizza;
-import com.example.sliceeehouse.model.enums.Category;
+// import com.example.sliceeehouse.model.enums.Category;
 import com.example.sliceeehouse.repository.PizzaRepository;
 
 // ✅ ADD THIS IMPORT

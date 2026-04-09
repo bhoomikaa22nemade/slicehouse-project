@@ -1,7 +1,8 @@
 package com.example.sliceeehouse.controller;
 
+import com.example.sliceeehouse.model.Category;
 import com.example.sliceeehouse.model.Pizza;
-import com.example.sliceeehouse.model.enums.Category;
+// import com.example.sliceeehouse.model.enums.Category;
 import com.example.sliceeehouse.repository.PizzaRepository;
 
 import java.io.IOException;
